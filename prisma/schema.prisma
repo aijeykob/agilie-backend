@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Account {
+  id       Int       @id @default(autoincrement())
+  name     String
+  wallets  Wallet[]
+}
+
+model Wallet {
+  id                 Int      @id @default(autoincrement())
+  account_id         Int
+  crypto_asset       String
+  crypto_balance     Float
+  reference_currency String
+  balances           Balance[]
+  account            Account  @relation(fields: [account_id], references: [id])
+}
+
+model Balance {
+  id        Int     @id @default(autoincrement())
+  date      DateTime
+  balance   Float
+  wallet_id Int
+  wallet    Wallet  @relation(fields: [wallet_id], references: [id])
+}
